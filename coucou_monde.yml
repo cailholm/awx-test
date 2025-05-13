@@ -1,0 +1,7 @@
+# hello_world.yml
+- name: Coucou Monde
+  hosts: localhost
+  gather_facts: no
+  tasks:
+    - debug:
+        msg: "Hello from AWX"
