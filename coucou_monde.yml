@@ -6,5 +6,5 @@
     tunnel_name: "exemple"  # Définissez une valeur par défaut pour la variable
 
   tasks:
-      debug:
+    - debug:
         msg: "coucou monde: {{ tunnel_name }}"
