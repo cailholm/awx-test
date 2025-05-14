@@ -2,8 +2,6 @@
 - name: Playbook pour dire coucou avec une variable
   hosts: localhost
   gather_facts: no
-  vars:
-    tunnel_name: "exemple"  # Définissez une valeur par défaut pour la variable
 
   tasks:
     - name: Dire coucou au monde avec une variable
