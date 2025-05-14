@@ -1,0 +1,71 @@
+---
+- name: Fetch IPSEC tunnels from Total connect
+  hosts: test_fortigate
+  connection: httpapi
+  gather_facts: no
+ 
+  vars:
+    ansible_httpapi_use_ssl: true
+    ansible_httpapi_validate_certs: false
+    ansible_httpapi_port: 443
+ 
+  tasks:
+    - name: Configure Phase 1 of the IPsec VPN
+      fortinet.fortios.fortios_vpn_ipsec_phase1_interface:
+        vdom: "ZSA-PP"
+        state: "present"
+        access_token: "{{ fortigate_access_token }}"
+        vpn_ipsec_phase1_interface:
+          name: "{{ tunnel_name }}"
+          type: "{{ type }}"
+          interface: "{{ interface }}"
+          ike_version: "{{ ike_version }}"
+          # local_gw: "192.168.1.1"
+          remote_gw: "{{ remote_gw }}"
+          psksecret: "{{ psksecret }}"
+          proposal: "{{ proposal }}"
+          dpd: "{{ dpd }}"
+          add_route: "{{ add_route }}"
+          dpd_retryinterval: "{{ dpd_retryinterval }}"
+          dpd_retrycount: "{{ dpd_retrycount }}"
+          nattraversal: "{{ nattraversal }}"
+ 
+    - name: Configure Phase 2 of the IPsec VPN
+      fortinet.fortios.fortios_vpn_ipsec_phase2_interface:
+        vdom: "ZSA-PP"
+        state: "present"
+        access_token: "{{ fortigate_access_token }}"
+        vpn_ipsec_phase2_interface:
+          name: "{{ phase2_name }}"
+          phase1name: "{{ tunnel_name }}"
+          # proposal: "aes256-sha256"
+          # pfs: "enable"
+          # keylifeseconds: "3600"
+          # src_addr_type: "range"
+          # dst_addr_type: "range"
+          # src_subnet: "192.168.2.0/24"
+          # dst_subnet: "20.0.0.0/24"
+          src_subnet: "{{ src_subnet }}"
+          dst_subnet: "{{ dst_subnet }}"
+          # dst_start_ip: "20.0.0.0"
+          # dst_end_ip: "20.0.0.50"
+          # src_end_ip: "192.168.2.150"
+          # src_start_ip: "192.168.2.0"
+ 
+ 
+    # - name: Configure firewall policy to allow VPN traffic
+    #   fortios_firewall_policy:
+    #     vdom: "ZSA-PP"
+    #     state: "present"
+    #     access_token: "{{ fortigate_access_token }}"
+    #     firewall_policy:
+    #       policyid: 1
+    #       name: "VPN to LAN"
+    #       srcintf: "vpn_phase1"
+    #       dstintf: "port2"
+    #       srcaddr: "all"
+    #       dstaddr: "all"
+    #       action: "accept"
+    #       schedule: "always"
+    #       service: "ALL"
+    #       logtraffic: "all"
